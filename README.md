@@ -1,32 +1,43 @@
-# Kerala residence — interactive 3D viewer
+# Kerala residence — interactive 3D project
 
-Explore the two-storey house with day/night lighting, six camera presets, and orbit, pan and zoom controls.
+The repository contains the interactive web viewer and the source assets used to build the house. The live viewer is deployed automatically from this branch:
 
-Public address after deployment: https://elhamhashir43-eng.github.io/sample3d/
+https://elhamhashir43-eng.github.io/sample3d/
 
-## Enable GitHub Pages
+## Run the viewer
 
-1. Open https://github.com/elhamhashir43-eng/sample3d/settings/pages.
-2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
-3. Open the repository's **Actions** tab.
-4. Select **Deploy 3D viewer to GitHub Pages**, then **Run workflow** on `main` if the initial run failed before Pages was enabled.
-5. Wait for both `build` and `deploy` to succeed, then open the public address above.
-
-Future pushes to `main` deploy automatically. No paid server or Blender installation is needed to view the website.
-
-## Run locally
-
-Install Node.js 22.12 or later, then run:
+Install Node.js 22.12 or later, then in the repository folder run:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open the address printed by Vite. Drag to orbit, right-drag to pan and scroll to zoom. H restores hidden controls.
+Open the local Vite address. The controls include day/night lighting, eight camera presets, orbit, pan, zoom, roof visibility, and ground/first/all-floor views. Drag to orbit, right-drag to pan, and scroll to zoom.
 
-## Assets and assumptions
+To build the deployable site, run `npm run build`. GitHub Actions publishes the built site after pushes to `main`.
 
-`public/two-storey/house.glb` contains the textured geometry; `lighting.json` supplies browser light positions. The website contains only the assets needed to view the house. Editable Blender scenes remain in the original local project.
+## Blender source
 
-Dimensions, hidden room layouts and side elevations are estimated from architectural reference imagery.
+- `blender/build_reference.py` builds the Blender scene and exports the web model.
+- `blender/house.blend` and `blender/house-night.blend` are editable day and night scenes.
+- `exports/textures/` contains the textures referenced by the builder.
+- `public/two-storey/house.glb` and `lighting.json` are the viewer-ready assets.
+
+With Blender installed, run the build script from the repository root:
+
+```sh
+blender -b --python blender/build_reference.py
+```
+
+It writes the editable scenes under `blender/` and the GLB and light manifest under `exports/two-storey/`. Copy the exported `house.glb` and `lighting.json` into `public/two-storey/`, then build the site.
+
+## Architectural assumptions
+
+The floor-plan dimensions are treated as centimetres and converted to metres. The clipped small toilet label is estimated as approximately 120 × 240 cm. Wall thickness, floor heights, roof pitches and unlabelled dimensions are approximations from the supplied drawings. This is a visualization model, not construction documentation.
+
+The interactive assets are optimized for web performance; they do not match the photorealistic quality of the exterior rendering.
+
+## GitHub Pages setup
+
+The repository uses GitHub Actions for Pages deployment. In **Settings → Pages**, set **Build and deployment → Source** to **GitHub Actions**. The workflow deploys after pushes to `main`.
